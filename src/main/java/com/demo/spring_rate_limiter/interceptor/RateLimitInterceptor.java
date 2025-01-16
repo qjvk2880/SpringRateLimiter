@@ -1,6 +1,5 @@
 package com.demo.spring_rate_limiter.interceptor;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -18,6 +17,6 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
 		Exception {
-		return !rateLimitService.exceededLimitRate(request.getRemoteAddr());
+		return !rateLimitService.isRateLimitExceeded(request.getRemoteAddr());
 	}
 }
