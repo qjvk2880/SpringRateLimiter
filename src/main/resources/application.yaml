@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: spring_rate_limiter
+  data:
+    redis:
+      port: 6379
+      host: localhost
