@@ -1,6 +1,9 @@
 package com.demo.spring_rate_limiter.service;
 
+import java.util.Set;
+
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -42,5 +45,19 @@ public class RateLimitService {
 
 	private String getClientKey(String clientIp) {
 		return TOKEN_BUCKET_KEY + clientIp;
+	}
+
+	@Scheduled(cron = "0 * * * * *") // 매 분 0초마다 실행
+	public void refillRateLimitBuckets() {
+		String clientIpPattern = TOKEN_BUCKET_KEY + "*";
+		Set<String> clientIps = redisTemplate.keys(clientIpPattern);
+
+		if (clientIps == null) {
+			return;
+		}
+
+		for (String key : clientIps) {
+			redisTemplate.opsForValue().set(key, TOKEN_BUCKET_MAX_SIZE);
+		}
 	}
 }
